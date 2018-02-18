@@ -1,7 +1,68 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
+<resources xmlns:xliff="http://schemas.android.com/apk/res-auto">
+    <!-- Title for the application. [CHAR LIMIT=12] -->
     <string name="app_name">Just Java</string>
-    <string name="quantity">quantity</string>
-    <string name="btn_text">order</string>
-    <string name="price">price</string>
+
+    <!-- Hint text display in the empty field for the user's name [CHAR LIMIT=20] -->
+    <string name="name">Name</string>
+
+    <!-- Heading for the toppings checkboxes [CHAR LIMIT=20] -->
+    <string name="toppings">Toppings</string>
+
+    <!-- Name of the CheckBox for whipped cream [CHAR LIMIT=20] -->
+    <string name="whipped_cream">Whipped Cream</string>
+
+    <!-- Name of the CheckBox for chocolate [CHAR LIMIT=20] -->
+    <string name="chocolate">Chocolate</string>
+
+    <!-- Heading for the quantity controller [CHAR LIMIT=20] -->
+    <string name="quantity">Quantity</string>
+
+    <!-- Number of cups displayed in the beginning [CHAR LIMIT=5] -->
+    <string name="initial_quantity_value">2</string>
+
+    <!-- Heading for the ordering button [CHAR LIMIT=20] -->
+    <string name="order">Order</string>
+
+    <!-- Subject email. [CHAR LIMIT=NONE] ->
+    <string name="email_subject">Just Java to <xliff:g id="name" example="Amy">%s</xliff:g></string-->
+
+    <!-- Toast message showing an error when more than 100 cups are ordered [CHAR LIMIT=40] -->
+    <!--string name="toast_too_much">You cannot order more than 100 cups</string-->
+    <string name="toastIncrease">You cannot order more than 100 cups</string>
+
+    <!-- Toast message showing an error when less than 1 cup is ordered [CHAR LIMIT=40] -->
+    <!--string name="toast_too_less">You cannot order less than 1 cup</string-->
+    <string name="toastDecrease">You cannot order less than 1 cup</string>
+
+    <!-- Name for the order summary. It will be shown in the format of "Name: Amy" where Amy is the
+      user's name. [CHAR LIMIT=NONE] -->
+    <string name="order_summary_name">Name: <xliff:g example="Miguel Verdaguer" id="name">%s</xliff:g></string>
+
+    <!-- Whipped cream topping for the order summary. It will be shown in the format of
+      "Add whipped cream? true" or "Add whipped cream? false". [CHAR LIMIT=NONE] -->
+    <string name="order_summary_whipped_cream">Add whipped cream ? <xliff:g example="false" id="addWhippedCream">%b</xliff:g></string>
+
+    <!-- Chocolate topping for the order summary. It will be shown in the format of
+      "Add chocolate? true" or "Add chocolate? false". [CHAR LIMIT=NONE] -->
+    <string name="order_summary_chocolate">Add chocolate? <xliff:g example="false" id="addChocolate">%b</xliff:g></string>
+
+    <!-- Quantity for the order summary.It will be shown in the format of Quantity: 2. [CHAR LIMIT=NONE] -->
+    <string name="order_summary_quantity">Quantity: <xliff:g example="1" id="quantity">%i</xliff:g></string>
+
+    <!-- Price for the order summary.It will be shown in the format of Total: 10$. [CHAR LIMIT=NONE] -->
+    <string name="order_summary_price">Total: <xliff:g example="10" id="price">%i $</xliff:g></string>
+
+    <!-- Thank you message for the order summary. [CHAR LIMIT=NONE] -->
+    <string name="thank_you">Thank You!</string>
+
+    <!-- Subject line for the order summary email. It will be in the format of
+      "Just Java order for Amy" where Amy is the user's name. [CHAR LIMIT=NONE] -->
+    <string name="order_summary_email_subject">Order summury email subject <xliff:g example="Amy" id="name">%s</xliff:g></string>
+
+    <!-- Boolean false message Checkbox. [CHAR LIMIT=NONE] -->
+    <string name="no">No</string>
+
+    <!-- Boolean true message Checkbox. [CHAR LIMIT=NONE] -->
+    <string name="yes">Yes</string>
 </resources>

@@ -1,5 +1,7 @@
 package com.example.android.justjava;
 
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -7,16 +9,14 @@ import android.view.View;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.TextView;
-
+import android.widget.Toast;
+import java.text.NumberFormat;
 /**
  * This app displays an order form to order coffee.
  */
 public class MainActivity extends AppCompatActivity {
 
-    int quantity = 0;
-    int priceCupOfCoffe = 5;
-    int priceWhippedCream = 1;
-    int priceChocolate = 2;
+    int quantity = 2;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,15 +27,24 @@ public class MainActivity extends AppCompatActivity {
     /**
      * This method is called when the plus button is clicked.
      */
-    public void increment(View view) {
+    public void increment(View view){
+        if(quantity == 100) {
+            Toast.makeText(this, getString(R.string.toastIncrease), Toast.LENGTH_SHORT).show();
+            return;
+        }
         quantity = quantity + 1;
         displayQuantity(quantity);
+
     }
 
     /**
      * This method is called when the minus button is clicked.
      */
-    public void decrement(View view) {
+    public void decrement(View view){
+        if(quantity == 1) {
+            Toast.makeText(this, getString(R.string.toastDecrease), Toast.LENGTH_SHORT).show();
+            return;
+        }
         quantity = quantity - 1;
         displayQuantity(quantity);
     }
@@ -44,50 +53,68 @@ public class MainActivity extends AppCompatActivity {
      * This method is called when the order button is clicked.
      */
     public void submitOrder(View view) {
-        //
-        EditText editTextName = (EditText) findViewById(R.id.edit_text_name);
-        String nameText = editTextName.getText().toString();
+        // Get the name the user has written
+        EditText nameEditText = (EditText) findViewById(R.id.name_field);
+        String name = nameEditText.getText().toString();
 
         // Figure out if the user wants whipped cream topping
-        CheckBox whippedCreamCheckBox = (CheckBox) findViewById(R.id.whipped_cream_checkbox);
+        CheckBox whippedCreamCheckBox = (CheckBox) findViewById(R.id.checkbox_whippedCream);
         boolean hasWhippedCream = whippedCreamCheckBox.isChecked();
 
         // Figure out if the user wants chocolate topping
-        CheckBox chocolateCheckBox = (CheckBox) findViewById(R.id.chocolate_checkbox);
+        CheckBox chocolateCheckBox = (CheckBox) findViewById(R.id.checkbox_chocolate);
         boolean hasChocolate = chocolateCheckBox.isChecked();
 
         // Calculate the price
         int price = calculatePrice(hasWhippedCream, hasChocolate);
 
         // Display the order summary on the screen
-        String message = createOrderSummary(nameText, price, hasWhippedCream, hasChocolate);
-        displayMessage(message);
+//        String orderSummuryMessage = createOrderSummary(nameText, price, hasWhippedCream, hasChocolate);
+//        displayMessage(orderSummuryMessage);
+
+//        Intent intent = new Intent(Intent.ACTION_VIEW);
+//        intent.setData(Uri.parse("geo:47.6,-132.3"));
+//        if (intent.resolveActivity(getPackageManager()) != null) {
+//            startActivity(intent);
+//        }
+
+        //Intent intent = new Intent(Intent.ACTION_SEND);
+        // intent.setType("text/html");
+        // intent.putExtra(Intent.EXTRA_EMAIL, "apitos@gmail.com");
+        Intent intent = new Intent(Intent.ACTION_SENDTO);
+        intent.setData(Uri.parse("mailto:")); // only email apps should handle this
+        intent.putExtra(Intent.EXTRA_SUBJECT, getString(R.string.order_summary_email_subject, name));// Subject//
+        // "I'm email body."
+        intent.putExtra(Intent.EXTRA_TEXT,  createOrderSummary(price, hasWhippedCream, hasChocolate, name));
+        if (intent.resolveActivity(getPackageManager()) != null) {
+            startActivity(intent);
+        }
     }
 
     /**
-     * Calculates the price of the order.
+     * Calculate the price of the order
      *
+     * @param hasWhippedCream is whether or not the user wants whipped cream topping
+     * @param hasChocolate    is whether or not the user wants chocolate topping
      * @return total price
      */
-    private int calculatePrice(boolean hasWhippedCream, boolean hasChocolate) {
-        int isPriceWhippedCream = 0;
-        int isPriceChocolate = 0;
-        int totalPriceOfOrderedCoffees = 0;
 
-        //int oneCup = quantity * priceCupOfCoffe;
-        int oneCup = 0;
-        if (hasWhippedCream) {
-            isPriceWhippedCream = 1;
+    private int calculatePrice(boolean addWhippedCream, boolean addChocolate) {
+// Price of 1 cup of coffee
+        int basePrice = 5;
+
+        // Add $1 if user wants whipped cream
+        if (addWhippedCream) {
+            basePrice = basePrice + 1;
         }
-        if (hasChocolate) {
-            isPriceChocolate = 2;
+
+        // Add $2 if user wants chocolate
+        if (addChocolate) {
+            basePrice = basePrice + 2;
         }
-        //Calclute one with or without whipped cream or chocolate
-        oneCup = priceCupOfCoffe + isPriceWhippedCream + isPriceChocolate;
-        //Calclute ordered cups of coffees
-        totalPriceOfOrderedCoffees = oneCup * quantity;
-        //Log.v("MainActivity","totalPriceOfOrderedCoffees = " + totalPriceOfOrderedCoffees);
-        return totalPriceOfOrderedCoffees;
+
+        // Calculate the total order price by multiplying by quantity
+        return basePrice * quantity;
 
     }
 
@@ -99,16 +126,25 @@ public class MainActivity extends AppCompatActivity {
      * @param addChocolate    is whether or not to add chocolate to the coffee
      * @return text summary
      */
-    private String createOrderSummary(String getName, int price, boolean addWhippedCream, boolean addChocolate) {
-        String priceMessage = "Name: " + getName;
-        priceMessage += "\nAdd whipped cream? " + addWhippedCream;
-        priceMessage += "\nAdd chocolate? " + addChocolate;
-        priceMessage += "\nQuantity: " + quantity;
-        priceMessage += "\nTotal: $" + price;
-        priceMessage += "\nThank you!";
+//    private String createOrderSummary(String getName, int price, boolean addWhippedCream, boolean addChocolate) {
+//        String priceMessage = "Name: " + getName;
+//        priceMessage += "\nAdd whipped cream? " + addWhippedCream;
+//        priceMessage += "\nAdd chocolate? " + addChocolate;
+//        priceMessage += "\nQuantity: " + quantity;
+//        priceMessage += "\nTotal: $" + price;
+//        priceMessage += "\nThank you!";
+//        return priceMessage;
+//    }
+    private String createOrderSummary(int price, boolean addWhippedCream,
+                                      boolean addChocolate, String customerName) {
+        String priceMessage = getString(R.string.order_summary_name, customerName);
+        priceMessage += "\n" + getString(R.string.order_summary_whipped_cream, (addWhippedCream? getString(R.string.yes) : getString(R.string.no)));
+        priceMessage += "\n" + getString(R.string.order_summary_chocolate, (addChocolate? getString(R.string.yes) : getString(R.string.no)));
+        priceMessage += "\n" + getString(R.string.order_summary_quantity, quantity);
+        priceMessage += "\n" + getString(R.string.order_summary_price, NumberFormat.getCurrencyInstance().format(price));
+        priceMessage += "\n" + getString(R.string.thank_you);
         return priceMessage;
     }
-
     /**
      * This method displays the given quantity value on the screen.
      */
@@ -120,9 +156,9 @@ public class MainActivity extends AppCompatActivity {
     /**
      * This method displays the given text on the screen.
      */
-    private void displayMessage(String message) {
-        TextView orderSummaryTextView = (TextView) findViewById(R.id.order_summary_text_view);
-        orderSummaryTextView.setText(message);
-    }
+//    private void displayMessage(String message) {
+//        TextView orderSummaryTextView = (TextView) findViewById(R.id.order_summary_text_view);
+//        orderSummaryTextView.setText(message);
+//    }
 
 }
