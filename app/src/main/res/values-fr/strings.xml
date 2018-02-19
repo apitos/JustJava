@@ -29,7 +29,7 @@
     <string name="toastIncrease">Vous ne pouvez pas commander plus de 100 tasses</string>
 
     <!-- Toast message showing an error when less than 1 cup is ordered [CHAR LIMIT=40] -->
-    <string name="toastDecrease">>Vous ne pouvez pas commander moins d\'une 1 tasse</string>
+    <string name="toastDecrease">Vous ne pouvez pas commander moins d\'une 1 tasse</string>
 
     <!--
       Name for the order summary. It will be shown in the format of "Name: Amy" where Amy is the

@@ -1,16 +1,34 @@
+
+/*
+ * Copyright (C) 2015 The Android Open Source Project
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package com.example.android.justjava;
 
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
+import android.text.Editable;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import java.text.NumberFormat;
+
 /**
  * This app displays an order form to order coffee.
  */
@@ -53,9 +71,10 @@ public class MainActivity extends AppCompatActivity {
      * This method is called when the order button is clicked.
      */
     public void submitOrder(View view) {
-        // Get the name the user has written
-        EditText nameEditText = (EditText) findViewById(R.id.name_field);
-        String name = nameEditText.getText().toString();
+        // Get user's name
+        EditText nameField = (EditText) findViewById(R.id.name_field);
+        Editable nameEditable = nameField.getText();
+        String name = nameEditable.toString();
 
         // Figure out if the user wants whipped cream topping
         CheckBox whippedCreamCheckBox = (CheckBox) findViewById(R.id.checkbox_whippedCream);
@@ -69,96 +88,73 @@ public class MainActivity extends AppCompatActivity {
         int price = calculatePrice(hasWhippedCream, hasChocolate);
 
         // Display the order summary on the screen
-//        String orderSummuryMessage = createOrderSummary(nameText, price, hasWhippedCream, hasChocolate);
-//        displayMessage(orderSummuryMessage);
+        String message = createOrderSummary(name, price, hasWhippedCream, hasChocolate);
 
-//        Intent intent = new Intent(Intent.ACTION_VIEW);
-//        intent.setData(Uri.parse("geo:47.6,-132.3"));
-//        if (intent.resolveActivity(getPackageManager()) != null) {
-//            startActivity(intent);
-//        }
-
-        //Intent intent = new Intent(Intent.ACTION_SEND);
-        // intent.setType("text/html");
-        // intent.putExtra(Intent.EXTRA_EMAIL, "apitos@gmail.com");
+        // Use an intent to launch an email app.
+        // Send the order summary in the email body.
         Intent intent = new Intent(Intent.ACTION_SENDTO);
         intent.setData(Uri.parse("mailto:")); // only email apps should handle this
-        intent.putExtra(Intent.EXTRA_SUBJECT, getString(R.string.order_summary_email_subject, name));// Subject//
-        // "I'm email body."
-        intent.putExtra(Intent.EXTRA_TEXT,  createOrderSummary(price, hasWhippedCream, hasChocolate, name));
+        intent.putExtra(Intent.EXTRA_SUBJECT,
+                getString(R.string.order_summary_email_subject, name));
+        intent.putExtra(Intent.EXTRA_TEXT, message);
+
         if (intent.resolveActivity(getPackageManager()) != null) {
             startActivity(intent);
         }
     }
 
     /**
-     * Calculate the price of the order
+     * Calculates the price of the order.
      *
-     * @param hasWhippedCream is whether or not the user wants whipped cream topping
-     * @param hasChocolate    is whether or not the user wants chocolate topping
+     * @param addWhippedCream is whether or not we should include whipped cream topping in the price
+     * @param addChocolate    is whether or not we should include chocolate topping in the price
      * @return total price
      */
-
     private int calculatePrice(boolean addWhippedCream, boolean addChocolate) {
-// Price of 1 cup of coffee
+        // First calculate the price of one cup of coffee
         int basePrice = 5;
 
-        // Add $1 if user wants whipped cream
+        // If the user wants whipped cream, add $1 per cup
         if (addWhippedCream) {
             basePrice = basePrice + 1;
         }
 
-        // Add $2 if user wants chocolate
+        // If the user wants chocolate, add $2 per cup
         if (addChocolate) {
             basePrice = basePrice + 2;
         }
 
-        // Calculate the total order price by multiplying by quantity
-        return basePrice * quantity;
-
+        // Calculate the total order price by multiplying by the quantity
+        return quantity * basePrice;
     }
 
     /**
      * Create summary of the order.
      *
+     * @param name            on the order
      * @param price           of the order
      * @param addWhippedCream is whether or not to add whipped cream to the coffee
      * @param addChocolate    is whether or not to add chocolate to the coffee
      * @return text summary
      */
-//    private String createOrderSummary(String getName, int price, boolean addWhippedCream, boolean addChocolate) {
-//        String priceMessage = "Name: " + getName;
-//        priceMessage += "\nAdd whipped cream? " + addWhippedCream;
-//        priceMessage += "\nAdd chocolate? " + addChocolate;
-//        priceMessage += "\nQuantity: " + quantity;
-//        priceMessage += "\nTotal: $" + price;
-//        priceMessage += "\nThank you!";
-//        return priceMessage;
-//    }
-    private String createOrderSummary(int price, boolean addWhippedCream,
-                                      boolean addChocolate, String customerName) {
-        String priceMessage = getString(R.string.order_summary_name, customerName);
-        priceMessage += "\n" + getString(R.string.order_summary_whipped_cream, (addWhippedCream? getString(R.string.yes) : getString(R.string.no)));
-        priceMessage += "\n" + getString(R.string.order_summary_chocolate, (addChocolate? getString(R.string.yes) : getString(R.string.no)));
+    private String createOrderSummary(String name, int price, boolean addWhippedCream,
+                                      boolean addChocolate) {
+        String priceMessage = getString(R.string.order_summary_name, name);
+        priceMessage += "\n" + getString(R.string.order_summary_whipped_cream, addWhippedCream);
+        priceMessage += "\n" + getString(R.string.order_summary_chocolate, addChocolate);
         priceMessage += "\n" + getString(R.string.order_summary_quantity, quantity);
-        priceMessage += "\n" + getString(R.string.order_summary_price, NumberFormat.getCurrencyInstance().format(price));
+        priceMessage += "\n" + getString(R.string.order_summary_price,
+                NumberFormat.getCurrencyInstance().format(price));
         priceMessage += "\n" + getString(R.string.thank_you);
         return priceMessage;
     }
+
     /**
      * This method displays the given quantity value on the screen.
      */
     private void displayQuantity(int numberOfCoffees) {
-        TextView quantityTextView = (TextView) findViewById(R.id.quantity_text_view);
+        TextView quantityTextView = (TextView) findViewById(
+                R.id.quantity_text_view);
         quantityTextView.setText("" + numberOfCoffees);
     }
-
-    /**
-     * This method displays the given text on the screen.
-     */
-//    private void displayMessage(String message) {
-//        TextView orderSummaryTextView = (TextView) findViewById(R.id.order_summary_text_view);
-//        orderSummaryTextView.setText(message);
-//    }
-
 }

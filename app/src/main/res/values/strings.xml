@@ -48,10 +48,10 @@
     <string name="order_summary_chocolate">Add chocolate? <xliff:g example="false" id="addChocolate">%b</xliff:g></string>
 
     <!-- Quantity for the order summary.It will be shown in the format of Quantity: 2. [CHAR LIMIT=NONE] -->
-    <string name="order_summary_quantity">Quantity: <xliff:g example="1" id="quantity">%i</xliff:g></string>
+    <string name="order_summary_quantity">Quantity: <xliff:g example="1" id="quantity">%d</xliff:g></string>
 
     <!-- Price for the order summary.It will be shown in the format of Total: 10$. [CHAR LIMIT=NONE] -->
-    <string name="order_summary_price">Total: <xliff:g example="10" id="price">%i $</xliff:g></string>
+    <string name="order_summary_price">Total: <xliff:g example="10" id="price">%s</xliff:g></string>
 
     <!-- Thank you message for the order summary. [CHAR LIMIT=NONE] -->
     <string name="thank_you">Thank You!</string>
